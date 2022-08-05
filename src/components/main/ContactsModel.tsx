@@ -1,7 +1,6 @@
 import React, {RefObject, useState} from 'react';
 import {
 	Badge,
-	Box,
 	Button,
 	Flex,
 	FormControl,
@@ -15,7 +14,6 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalOverlay,
-	Text,
 	useDisclosure,
 	useToast,
 	Wrap
@@ -98,10 +96,10 @@ const ContactsModel = ({contact, getContact}: { contact: Contact, getContact: Fu
 			</Modal>
 			<AlertDialog cancelRef={cancelRef} isOpen={isOpen} onClose={onClose} deletePost={deletePost}/>
 			<Image src={contact.avatar} width={'85px'} rounded={5}/>
-			<Flex  p={1} rounded={5} width={'60%'} flexDirection={'column'} justifyContent={'center'} >
-				<Badge colorScheme={'green'}>{contact.name}</Badge>
-				<Text>{contact.phone}</Text>
-				<Badge colorScheme={'blue'}>{contact.address}</Badge>
+			<Flex p={1} rounded={5} width={'60%'} flexDirection={'column'} justifyContent={'center'}>
+				<Badge noOfLines={1} colorScheme={'green'}>{contact.name}</Badge>
+				<Badge my={2} noOfLines={1} colorScheme={'teal'}>{contact.phone}</Badge>
+				<Badge noOfLines={1} colorScheme={'blue'}>{contact.address}</Badge>
 			</Flex>
 			<Wrap/>
 			<Wrap/>

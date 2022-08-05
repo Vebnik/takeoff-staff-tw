@@ -18,11 +18,15 @@ const MainPage = () => {
 			})
 	}
 
+	const refSetContact = (value: Array<Contact>)=> {
+		setContacts(value)
+	}
+
 	useEffect(() => getContact(), [])
 
 	return (
 		<>
-			<ToolBar getContact={getContact}/>
+			<ToolBar getContact={getContact} refSetContact={refSetContact}/>
 			<SimpleGrid spacing={2} width={'100%'} my={5} justifyContent={'center'} alignItems={'center'}>
 				{
 					contacts.map((contact, i) =>

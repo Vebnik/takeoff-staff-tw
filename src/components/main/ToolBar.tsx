@@ -3,12 +3,12 @@ import {
 	Box,
 	Button,
 	ButtonGroup,
-	Flex, FormControl, FormHelperText, FormLabel, Input,
+	Flex, FormControl, FormHelperText, FormLabel, Input, InputGroup, InputRightElement,
 	Modal, ModalBody,
 	ModalCloseButton,
 	ModalContent,
 	ModalHeader,
-	ModalOverlay,
+	ModalOverlay, Select,
 	Text, useDisclosure
 } from "@chakra-ui/react";
 import {Context} from "../../index";
@@ -17,20 +17,20 @@ import {observer} from "mobx-react-lite";
 import userService from "../../service/UserService";
 import {CreateContact} from "../../interface/User";
 
-const ToolBar = observer(({getContact}:{getContact: Function}) => {
+const ToolBar = observer(({getContact, refSetContact}:{getContact: Function, refSetContact: Function}) => {
 
 	const {user} = useContext(Context)
 	const { isOpen, onOpen, onClose } = useDisclosure()
 	const [process, setProcess] = useState(false)
+	const [searchContact, setSearch] = useState('')
+	const [searchOption, setOption] = useState('name')
 
 	const [name, setName] = useState('')
 	const [address, setAddress] = useState('')
 	const [avatar, setAvatar] = useState('')
 	const [phone, setPhone] = useState('')
 
-	const openModalContact = () => {
-		onOpen()
-	}
+	const openModalContact = () => onOpen()
 
 	const createContact = () => {
 		const payload: CreateContact = {name, address, avatar, phone}
@@ -38,12 +38,19 @@ const ToolBar = observer(({getContact}:{getContact: Function}) => {
 
 		userService.createPosts(payload)
 			.then(results => {
-				console.log(results)
-
 				onClose()
 				setName(''); setAddress(''); setAvatar(''); setPhone(''); setProcess(false)
 				getContact()
 			})
+	}
+
+	const search = () => {
+		userService.searchPosts(`${searchOption}=${searchContact}`)
+			.then(results => {
+				refSetContact(results.data)
+				console.log(results.data)
+			})
+		setSearch('')
 	}
 
 	return (
@@ -81,9 +88,20 @@ const ToolBar = observer(({getContact}:{getContact: Function}) => {
 				</ModalContent>
 			</Modal>
 			<ButtonGroup>
-				<Button>Contacts</Button>
+				<Button onClick={() => getContact()}>Contacts</Button>
 				<Button onClick={openModalContact}>Create Contacts</Button>
 			</ButtonGroup>
+			<InputGroup width={'50%'} mx={2}>
+				<Input value={searchContact} onChange={(ev) => setSearch(ev.target.value)} pr='4.5rem' type={'text'} placeholder='Enter Name / Phone / Address'/>
+				<InputRightElement width='9.5rem'>
+					<Button mx={1} h='1.75rem' size='sm' onClick={search}>Search</Button>
+					<Select variant={'unstyled'} onChange={(ev) => setOption(ev.target.value)} width={'100%'}>
+						<option value='name'>Name</option>
+						<option value='phone'>Phone</option>
+						<option value='address'>Address</option>
+					</Select>
+				</InputRightElement>
+			</InputGroup>
 			<Flex justifyContent={'center'} alignItems={'center'}>
 				<Text borderBottom={'1px'}>
 					{user.user.email || 'Not found Email in Context'}
